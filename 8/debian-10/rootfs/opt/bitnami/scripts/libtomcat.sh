@@ -12,7 +12,7 @@
 . /opt/bitnami/scripts/libvalidations.sh
 
 ########################
-# Validate settings in MYSQL_*/MARIADB_* environment variables
+# Validate settings in POSTGRESQL_*/MYSQL_*/MARIADB_* environment variables
 # Globals:
 #   DB_*
 # Arguments:

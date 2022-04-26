@@ -17,22 +17,38 @@ set -o pipefail
 . /opt/bitnami/scripts/liblog.sh
 
 # Copy default configuration file
-cp "${JASPERREPORTS_CONF_DIR}/sample_conf/mysql_master.properties" "$JASPERREPORTS_CONF_FILE"
+if [[ "$JASPERREPORTS_DATABASE_TYPE" = "postgresql" ]]; then
+    cp "${JASPERREPORTS_CONF_DIR}/sample_conf/postgresql_master.properties" "$JASPERREPORTS_CONF_FILE"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "jdbcDriverClass=com.mysql.*"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "jdbcDataSourceClass=com.mysql"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "maven.jdbc.groupId=mysql"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "maven.jdbc.artifactId=mysql.*"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "maven.jdbc.version=.*bin"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "# appServerDir"
 
-# Delete duplicate example MySQL configuration lines in the configuration file so it does not break the jasperreports_conf_set function
-remove_in_file "$JASPERREPORTS_CONF_FILE" "jdbcDriverClass=com.mysql.*"
-remove_in_file "$JASPERREPORTS_CONF_FILE" "jdbcDataSourceClass=com.mysql"
-remove_in_file "$JASPERREPORTS_CONF_FILE" "maven.jdbc.groupId=mysql"
-remove_in_file "$JASPERREPORTS_CONF_FILE" "maven.jdbc.artifactId=mysql.*"
-remove_in_file "$JASPERREPORTS_CONF_FILE" "maven.jdbc.version=.*bin"
-remove_in_file "$JASPERREPORTS_CONF_FILE" "# appServerDir"
+    jasperreports_conf_set "jdbcDriverClass" "org.postgresql.Driver"
+    jasperreports_conf_set "jdbcDataSourceClass" "org.postgresql.ds.PGConnectionPoolDataSource"
+    jasperreports_conf_set "maven.jdbc.groupId" "org.postgresql"
+    jasperreports_conf_set "maven.jdbc.artifactId" "postgresql"
+    jasperreports_conf_set "dbPassword" ""
+else
+    cp "${JASPERREPORTS_CONF_DIR}/sample_conf/mysql_master.properties" "$JASPERREPORTS_CONF_FILE"
 
-# Configure default MariaDB settings
-jasperreports_conf_set "jdbcDriverClass" "org.mariadb.jdbc.Driver"
-jasperreports_conf_set "jdbcDataSourceClass" "org.mariadb.jdbc.MySQLDataSource"
-jasperreports_conf_set "maven.jdbc.groupId" "org.mariadb.jdbc"
-jasperreports_conf_set "maven.jdbc.artifactId" "mariadb-java-client"
-jasperreports_conf_set "dbPassword" ""
+    # Delete duplicate example MySQL configuration lines in the configuration file so it does not break the jasperreports_conf_set function
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "jdbcDriverClass=com.mysql.*"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "jdbcDataSourceClass=com.mysql"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "maven.jdbc.groupId=mysql"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "maven.jdbc.artifactId=mysql.*"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "maven.jdbc.version=.*bin"
+    remove_in_file "$JASPERREPORTS_CONF_FILE" "# appServerDir"
+
+    # Configure default MariaDB settings
+    jasperreports_conf_set "jdbcDriverClass" "org.mariadb.jdbc.Driver"
+    jasperreports_conf_set "jdbcDataSourceClass" "org.mariadb.jdbc.MySQLDataSource"
+    jasperreports_conf_set "maven.jdbc.groupId" "org.mariadb.jdbc"
+    jasperreports_conf_set "maven.jdbc.artifactId" "mariadb-java-client"
+    jasperreports_conf_set "dbPassword" ""
+fi
 
 # Configure Tomcat path
 jasperreports_conf_set "appServerDir" "${BITNAMI_ROOT_DIR}/tomcat"
