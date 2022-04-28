@@ -115,10 +115,6 @@ export JASPERREPORTS_DATABASE_PASSWORD="${JASPERREPORTS_DATABASE_PASSWORD:-}" # 
 
 # JasperReports persistence configuration
 export JASPERREPORTS_VOLUME_DIR="${BITNAMI_VOLUME_DIR}/jasperreports"
-if [[ "$JASPERREPORTS_DATABASE_TYPE" = "postgresql" ]]; then
-    export JASPERREPORTS_DATA_TO_PERSIST="${JASPERREPORTS_DATA_TO_PERSIST:-buildomatic/default_master.properties buildomatic/conf_source/db/postgresql/db.template.properties .jrsks .jrsksp}"
-else
-    export JASPERREPORTS_DATA_TO_PERSIST="${JASPERREPORTS_DATA_TO_PERSIST:-buildomatic/default_master.properties buildomatic/conf_source/db/mysql/db.template.properties .jrsks .jrsksp}"
-fi
+export JASPERREPORTS_DATA_TO_PERSIST="${JASPERREPORTS_DATA_TO_PERSIST:-buildomatic/default_master.properties buildomatic/conf_source/db/mysql/db.template.properties buildomatic/conf_source/db/postgresql/db.template.properties .jrsks .jrsksp}"
 
 # Custom environment variables may be defined below

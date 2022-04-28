@@ -13,21 +13,20 @@
 . /opt/bitnami/scripts/libpersistence.sh
 . /opt/bitnami/scripts/libservice.sh
 
-# Load database library
-if [[ "$JASPERREPORTS_DATABASE_TYPE" = "postgresql" ]]; then
-    if [[ -f /opt/bitnami/scripts/libpostgresqlclient.sh ]]; then
-        . /opt/bitnami/scripts/libpostgresqlclient.sh
-    elif [[ -f /opt/bitnami/scripts/libpostgresql.sh ]]; then
-        . /opt/bitnami/scripts/libpostgresql.sh
-    fi
-else
-    if [[ -f /opt/bitnami/scripts/libmysqlclient.sh ]]; then
-        . /opt/bitnami/scripts/libmysqlclient.sh
-    elif [[ -f /opt/bitnami/scripts/libmysql.sh ]]; then
-        . /opt/bitnami/scripts/libmysql.sh
-    elif [[ -f /opt/bitnami/scripts/libmariadb.sh ]]; then
-        . /opt/bitnami/scripts/libmariadb.sh
-    fi
+# Load MYSQL database library
+if [[ -f /opt/bitnami/scripts/libmysqlclient.sh ]]; then
+    . /opt/bitnami/scripts/libmysqlclient.sh
+elif [[ -f /opt/bitnami/scripts/libmysql.sh ]]; then
+    . /opt/bitnami/scripts/libmysql.sh
+elif [[ -f /opt/bitnami/scripts/libmariadb.sh ]]; then
+    . /opt/bitnami/scripts/libmariadb.sh
+fi
+
+# Load PostgreSQL database library
+if [[ -f /opt/bitnami/scripts/libpostgresqlclient.sh ]]; then
+    . /opt/bitnami/scripts/libpostgresqlclient.sh
+elif [[ -f /opt/bitnami/scripts/libpostgresql.sh ]]; then
+    . /opt/bitnami/scripts/libpostgresql.sh
 fi
 
 ########################
@@ -139,12 +138,12 @@ jasperreports_configure_db() {
         # to perform several checks
         jasperreports_conf_set "admin.jdbcUrl" "jdbc:postgresql://${JASPERREPORTS_DATABASE_HOST}:${JASPERREPORTS_DATABASE_PORT_NUMBER}/${JASPERREPORTS_DATABASE_NAME}" "${JASPERREPORTS_CONF_DIR}/conf_source/db/postgresql/db.template.properties"
 
+        # Override default mysql configuration to PostgreSQL
         jasperreports_conf_set "maven.jdbc.artifactId" "postgresql"
         jasperreports_conf_set "jdbcDriverClass" "org.postgresql.Driver"
         jasperreports_conf_set "jdbcDataSourceClass" "org.postgresql.ds.PGConnectionPoolDataSource"
         jasperreports_conf_set "maven.jdbc.groupId" "org.postgresql"
         jasperreports_conf_set "maven.jdbc.artifactId" "postgresql"
-        jasperreports_conf_set "dbPassword" ""
     else
 
         # Extract MariaDB client version from the library jar. We do it at initialization time to avoid issues when updating
@@ -197,12 +196,16 @@ jasperreports_configure_user() {
 
     # Change the default user username and mail using the database
     if [[ "$db_type" = "postgresql" ]]; then
-        postgresql_remote_execute "$JASPERREPORTS_DATABASE_HOST" "$JASPERREPORTS_DATABASE_PORT_NUMBER" "$JASPERREPORTS_DATABASE_NAME" "$JASPERREPORTS_DATABASE_USER" "$JASPERREPORTS_DATABASE_PASSWORD" <<<"UPDATE JIUser SET username='${JASPERREPORTS_USERNAME}' WHERE id=1"
-        postgresql_remote_execute "$JASPERREPORTS_DATABASE_HOST" "$JASPERREPORTS_DATABASE_PORT_NUMBER" "$JASPERREPORTS_DATABASE_NAME" "$JASPERREPORTS_DATABASE_USER" "$JASPERREPORTS_DATABASE_PASSWORD" <<<"UPDATE JIUser SET emailAddress='${JASPERREPORTS_EMAIL}' WHERE id=1"
+        postgresql_remote_execute "$JASPERREPORTS_DATABASE_HOST" "$JASPERREPORTS_DATABASE_PORT_NUMBER" "$JASPERREPORTS_DATABASE_NAME" "$JASPERREPORTS_DATABASE_USER" "$JASPERREPORTS_DATABASE_PASSWORD" <<-EOF
+            UPDATE JIUser SET emailAddress='${JASPERREPORTS_EMAIL}' WHERE id=1;
+            UPDATE JIUser SET username='${JASPERREPORTS_USERNAME}' WHERE id=1;
+EOF
 
     else
-        mysql_remote_execute "$JASPERREPORTS_DATABASE_HOST" "$JASPERREPORTS_DATABASE_PORT_NUMBER" "$JASPERREPORTS_DATABASE_NAME" "$JASPERREPORTS_DATABASE_USER" "$JASPERREPORTS_DATABASE_PASSWORD" <<<"UPDATE JIUser SET username='${JASPERREPORTS_USERNAME}' WHERE id=1"
-        mysql_remote_execute "$JASPERREPORTS_DATABASE_HOST" "$JASPERREPORTS_DATABASE_PORT_NUMBER" "$JASPERREPORTS_DATABASE_NAME" "$JASPERREPORTS_DATABASE_USER" "$JASPERREPORTS_DATABASE_PASSWORD" <<<"UPDATE JIUser SET emailAddress='${JASPERREPORTS_EMAIL}' WHERE id=1"
+        mysql_remote_execute "$JASPERREPORTS_DATABASE_HOST" "$JASPERREPORTS_DATABASE_PORT_NUMBER" "$JASPERREPORTS_DATABASE_NAME" "$JASPERREPORTS_DATABASE_USER" "$JASPERREPORTS_DATABASE_PASSWORD" <<-EOF
+            UPDATE JIUser SET emailAddress='${JASPERREPORTS_EMAIL}' WHERE id=1;
+            UPDATE JIUser SET username='${JASPERREPORTS_USERNAME}' WHERE id=1;
+EOF
     fi
 
     # Change the default user password using the export-import scripts

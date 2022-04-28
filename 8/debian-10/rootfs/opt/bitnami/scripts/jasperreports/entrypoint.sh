@@ -18,11 +18,9 @@ set -o pipefail
 print_welcome_page
 
 if [[ "$1" = "/opt/bitnami/scripts/tomcat/run.sh" ]]; then
-    if [[ "$JASPERREPORTS_DATABASE_TYPE" = "pgsql" ]]; then
-        /opt/bitnami/scripts/postgresql-client/setup.sh
-    else
-        /opt/bitnami/scripts/mysql-client/setup.sh
-    fi
+    /opt/bitnami/scripts/postgresql-client/setup.sh
+    /opt/bitnami/scripts/mysql-client/setup.sh
+
     # For compatibility with previous Helm charts, disable Tomcat auth by default
     TOMCAT_ENABLE_AUTH="${TOMCAT_ENABLE_AUTH:-no}" /opt/bitnami/scripts/tomcat/setup.sh
     /opt/bitnami/scripts/jasperreports/setup.sh

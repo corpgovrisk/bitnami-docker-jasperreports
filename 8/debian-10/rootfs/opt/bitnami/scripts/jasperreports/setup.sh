@@ -11,21 +11,19 @@ set -o pipefail
 . /opt/bitnami/scripts/jasperreports-env.sh
 
 # Load MySQL Client environment for 'mysql_remote_execute' (after 'jasperreports-env.sh' so that MODULE is not set to a wrong value)
-if [[ "$JASPERREPORTS_DATABASE_TYPE" = "pgsql" ]]; then
-    # Load PostgreSQL Client environment for 'postgresql_remote_execute'
-    if [[ -f /opt/bitnami/scripts/postgresql-client-env.sh ]]; then
-        . /opt/bitnami/scripts/postgresql-client-env.sh
-    elif [[ -f /opt/bitnami/scripts/postgresql-env.sh ]]; then
-        . /opt/bitnami/scripts/postgresql-env.sh
-    fi
-else
-    if [[ -f /opt/bitnami/scripts/mysql-client-env.sh ]]; then
-        . /opt/bitnami/scripts/mysql-client-env.sh
-    elif [[ -f /opt/bitnami/scripts/mysql-env.sh ]]; then
-        . /opt/bitnami/scripts/mysql-env.sh
-    elif [[ -f /opt/bitnami/scripts/mariadb-env.sh ]]; then
-        . /opt/bitnami/scripts/mariadb-env.sh
-    fi
+if [[ -f /opt/bitnami/scripts/mysql-client-env.sh ]]; then
+    . /opt/bitnami/scripts/mysql-client-env.sh
+elif [[ -f /opt/bitnami/scripts/mysql-env.sh ]]; then
+    . /opt/bitnami/scripts/mysql-env.sh
+elif [[ -f /opt/bitnami/scripts/mariadb-env.sh ]]; then
+    . /opt/bitnami/scripts/mariadb-env.sh
+fi
+
+# Load PostgreSQL client environment for 'postgresql_remote_execute'
+if [[ -f /opt/bitnami/scripts/postgresql-client-env.sh ]]; then
+    . /opt/bitnami/scripts/postgresql-client-env.sh
+elif [[ -f /opt/bitnami/scripts/postgresql-env.sh ]]; then
+    . /opt/bitnami/scripts/postgresql-env.sh
 fi
 
 
