@@ -26,7 +26,6 @@ elif [[ -f /opt/bitnami/scripts/postgresql-env.sh ]]; then
     . /opt/bitnami/scripts/postgresql-env.sh
 fi
 
-
 # Load libraries
 . /opt/bitnami/scripts/libjasperreports.sh
 

@@ -72,6 +72,10 @@ export JASPERREPORTS_LOG_FILE="${JASPERREPORTS_LOGS_DIR}/jasperserver.log"
 export JASPERREPORTS_CONF_FILE="${JASPERREPORTS_CONF_DIR}/default_master.properties"
 export PATH="${BITNAMI_ROOT_DIR}/common/bin:${PATH}"
 
+# JasperReports persistence configuration
+export JASPERREPORTS_VOLUME_DIR="${BITNAMI_VOLUME_DIR}/jasperreports"
+export JASPERREPORTS_DATA_TO_PERSIST="${JASPERREPORTS_DATA_TO_PERSIST:-buildomatic/default_master.properties buildomatic/conf_source/db/mysql/db.template.properties buildomatic/conf_source/db/postgresql/db.template.properties .jrsks .jrsksp}"
+
 # System users (when running with a privileged user)
 export JASPERREPORTS_DAEMON_USER="tomcat"
 export JASPERREPORTS_DAEMON_GROUP="tomcat"
@@ -112,9 +116,5 @@ JASPERREPORTS_DATABASE_USER="${JASPERREPORTS_DATABASE_USER:-"${MARIADB_DATABASE_
 export JASPERREPORTS_DATABASE_USER="${JASPERREPORTS_DATABASE_USER:-bn_jasperreports}" # only used during the first initialization
 JASPERREPORTS_DATABASE_PASSWORD="${JASPERREPORTS_DATABASE_PASSWORD:-"${MARIADB_DATABASE_PASSWORD:-}"}"
 export JASPERREPORTS_DATABASE_PASSWORD="${JASPERREPORTS_DATABASE_PASSWORD:-}" # only used during the first initialization
-
-# JasperReports persistence configuration
-export JASPERREPORTS_VOLUME_DIR="${BITNAMI_VOLUME_DIR}/jasperreports"
-export JASPERREPORTS_DATA_TO_PERSIST="${JASPERREPORTS_DATA_TO_PERSIST:-buildomatic/default_master.properties buildomatic/conf_source/db/mysql/db.template.properties buildomatic/conf_source/db/postgresql/db.template.properties .jrsks .jrsksp}"
 
 # Custom environment variables may be defined below

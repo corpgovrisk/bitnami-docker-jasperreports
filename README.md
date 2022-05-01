@@ -251,8 +251,7 @@ Available environment variables:
 
 ##### Database connection configuration
 
-- `JASPERREPORTS_DATABASE_TYPE`: postgresql,mariadb,mysql. mariadb and mysql are treated the
-    same. Default: **mariadb**
+- `JASPERREPORTS_DATABASE_TYPE`: Database type to be used for the JasperReports installation. Allowed values: `mariadb`, `mysql`, `postgresql`. Default: **mariadb**
 - `JASPERREPORTS_DATABASE_HOST`: Hostname for the MariaDB or MySQL server. Default: **mariadb**
 - `JASPERREPORTS_DATABASE_PORT_NUMBER`: Port used by the MariaDB or MySQL server. Default: **3306**
 - `JASPERREPORTS_DATABASE_NAME`: Database name that JasperReports will use to connect with the database. Default: **bitnami_jasperreports**
@@ -260,7 +259,7 @@ Available environment variables:
 - `JASPERREPORTS_DATABASE_PASSWORD`: Database password that JasperReports will use to connect with the database. No default.
 - `ALLOW_EMPTY_PASSWORD`: It can be used to allow blank passwords. Default: **no**
 
-##### Create a database for JasperReports using mysql-client. Default
+##### Create a database for JasperReports using mysql-client
 
 - `MYSQL_CLIENT_DATABASE_HOST`: Hostname for the MariaDB or MySQL server. Default: **mariadb**
 - `MYSQL_CLIENT_DATABASE_PORT_NUMBER`: Port used by the MariaDB or MySQL server. Default: **3306**

@@ -13,7 +13,7 @@
 . /opt/bitnami/scripts/libpersistence.sh
 . /opt/bitnami/scripts/libservice.sh
 
-# Load MYSQL database library
+# Load MYSQL/MariaDB database library
 if [[ -f /opt/bitnami/scripts/libmysqlclient.sh ]]; then
     . /opt/bitnami/scripts/libmysqlclient.sh
 elif [[ -f /opt/bitnami/scripts/libmysql.sh ]]; then
